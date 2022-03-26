@@ -212,11 +212,11 @@
         },
         "tweepy": {
             "hashes": [
-                "sha256:8d4b4520271b796fa7efc4c5d5ef3228af4d79f6a4d3ace3900b2778ed8f6f1c",
-                "sha256:cf02c4fbbd027fbc7172c24d03f53f061329ac040b22d201e59592a1cff86364"
+                "sha256:8ba5774ac1663b09e5fce1b030daf076f2c9b3ddbf2e7e7ea0bae762e3b1fe3e",
+                "sha256:f281bb53ab3ba999ff5e3d743d92d3ed543ee5551c7250948f9e56190ec7a43e"
             ],
             "index": "pypi",
-            "version": "==4.4.0"
+            "version": "==4.8.0"
         },
         "uritemplate": {
             "hashes": [
