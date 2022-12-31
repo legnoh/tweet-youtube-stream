@@ -1,5 +1,7 @@
 import os
 import tweepy
+import time
+from datetime import datetime
 
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
@@ -29,15 +31,20 @@ def tweet(update):
 
 if __name__ == '__main__':
   try:
+    now = datetime.now()
     lives = youtube_search().get('items', [])
     if len(lives) == 0:
       print('No live events found')
     else:
       print('Live events Found. Good Luck!:')
       for live in lives:
-          print('  LIVE: %s (%s)' % (live['snippet']['title'] , live['id']['videoId']))
-          tweet( "🔴LIVE: %s\n%s" % (
+          print('  LIVE: %s (%s)' % (live['snippet']['title'], live['id']['videoId']))
+          start_at = datetime.strptime(live['snippet']['publishedAt'], "%Y-%m-%dT%H:%M:%SZ")
+          td = now - start_at
+
+          tweet( "🔴LIVE: %s(%s経過)\n%s" % (
             live['snippet']['title'] ,
+            td,
             "https://www.youtube.com/watch?v=" + live['id']['videoId'])
           )
   except HttpError as e:
