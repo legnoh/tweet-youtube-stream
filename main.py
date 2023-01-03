@@ -1,6 +1,4 @@
-import os
-import tweepy
-import time
+import html,os,tweepy
 from datetime import datetime
 
 from googleapiclient.discovery import build
@@ -20,16 +18,18 @@ def youtube_search():
     type='video',
   ).execute()
 
-def tweet(update):
-  t = tweepy.Client(
+if __name__ == '__main__':
+  
+  tw = tweepy.Client(
     access_token=os.environ.get('TWITTER_ACCESS_TOKEN'),
     access_token_secret=os.environ.get('TWITTER_ACCESS_TOKEN_SECRET'),
     consumer_key=os.environ.get('TWITTER_CONSUMER_KEY'),
-    consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET')
+    consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET'),
+    bearer_token=os.environ.get('TWITTER_BEARER_TOKEN'),
   )
-  t.create_tweet(text=update)
 
-if __name__ == '__main__':
+  author=tw.get_me()[0]['username']
+
   try:
     now = datetime.now()
     lives = youtube_search().get('items', [])
@@ -38,14 +38,26 @@ if __name__ == '__main__':
     else:
       print('Live events Found. Good Luck!:')
       for live in lives:
-          print('  LIVE: %s (%s)' % (live['snippet']['title'], live['id']['videoId']))
+          title = html.unescape(live['snippet']['title'])
+          video_id = live['id']['videoId']
+
+          print('  LIVE: {title} (https://www.youtube.com/watch?v={video_id})'.format(title=title, video_id=video_id))
+
+          # calc timedelta
           start_at = datetime.strptime(live['snippet']['publishedAt'], "%Y-%m-%dT%H:%M:%SZ")
           td = now - start_at
+          hour=round((td.days * 24) + (td.seconds / 3600), 1)
 
-          tweet( "🔴LIVE: %s(%s経過)\n%s" % (
-            live['snippet']['title'] ,
-            td,
-            "https://www.youtube.com/watch?v=" + live['id']['videoId'])
-          )
+          # get latest tweet
+          tweets = tw.search_recent_tweets(query="from:{author} \"{title}\"".format(author=author,title=title))
+
+          # tweet
+          text = "🔴LIVE: {title}({hour}h▶️)\nhttps://www.youtube.com/watch?v={video_id}".format(title=title, hour=hour, video_id=video_id)
+          
+          if type(tweets[0]) == list and len(tweets[0]) != 0:
+            tw.create_tweet(text=text, in_reply_to_tweet_id=tweets[0][0]['id'])
+          else:
+            tw.create_tweet(text=text)
+
   except HttpError as e:
     print('An HTTP error ', e.resp.status, 'occurred:\n ', e.content)
