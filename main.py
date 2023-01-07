@@ -28,9 +28,7 @@ if __name__ == '__main__':
     consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET'),
   )
 
-  tw2 = tweepy.Client(
-    bearer_token=os.environ.get('TWITTER_BEARER_TOKEN'),
-  )
+  tw2 = tweepy.Client(os.environ.get('TWITTER_BEARER_TOKEN'))
 
   author=tw.get_me()[0]['username']
 
