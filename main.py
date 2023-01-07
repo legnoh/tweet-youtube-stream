@@ -51,7 +51,7 @@ if __name__ == '__main__':
           hour=round((td.days * 24) + (td.seconds / 3600), 1)
 
           # get latest tweet
-          tweets = tw2.search_recent_tweets(query="from:{author} https://www.youtube.com/watch?v={video_id}".format(author=author,video_id=video_id))
+          tweets = tw2.search_recent_tweets(query="from:{author} \"https://www.youtube.com/watch?v={video_id}\"".format(author=author,video_id=video_id))
 
           # tweet
           text = "🔴LIVE: {title}({hour}h▶️)\nhttps://www.youtube.com/watch?v={video_id}".format(title=title, hour=hour, video_id=video_id)
