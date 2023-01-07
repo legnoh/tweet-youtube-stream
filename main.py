@@ -16,6 +16,7 @@ def youtube_search():
     eventType='live',
     part='id,snippet',
     type='video',
+    order='date'
   ).execute()
 
 if __name__ == '__main__':
@@ -25,6 +26,9 @@ if __name__ == '__main__':
     access_token_secret=os.environ.get('TWITTER_ACCESS_TOKEN_SECRET'),
     consumer_key=os.environ.get('TWITTER_CONSUMER_KEY'),
     consumer_secret=os.environ.get('TWITTER_CONSUMER_SECRET'),
+  )
+
+  tw2 = tweepy.Client(
     bearer_token=os.environ.get('TWITTER_BEARER_TOKEN'),
   )
 
@@ -49,7 +53,7 @@ if __name__ == '__main__':
           hour=round((td.days * 24) + (td.seconds / 3600), 1)
 
           # get latest tweet
-          tweets = tw.search_recent_tweets(query="from:{author} \"{title}\"".format(author=author,title=title))
+          tweets = tw2.search_recent_tweets(query="from:{author} \"{title}\"".format(author=author,title=title))
 
           # tweet
           text = "🔴LIVE: {title}({hour}h▶️)\nhttps://www.youtube.com/watch?v={video_id}".format(title=title, hour=hour, video_id=video_id)
