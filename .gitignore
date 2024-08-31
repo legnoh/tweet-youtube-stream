@@ -6,7 +6,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -198,3 +199,4 @@ dmypy.json
 cython_debug/
 
 
+lives.yml
