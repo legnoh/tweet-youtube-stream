@@ -36,8 +36,11 @@ if __name__ == '__main__':
   author=tw.get_me()[0]['username']
 
   # load prev live datas
-  with open(LIVES_YML, encoding='utf-8')as f:
-    prev_posts = yaml.safe_load(f)
+  if os.path.isfile(LIVES_YML):
+    with open(LIVES_YML, encoding='utf-8')as f:
+      prev_posts = yaml.safe_load(f)
+  else:
+    prev_posts = []
 
   latest_posts = []
   lives = youtube_search().get('items', [])
