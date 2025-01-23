@@ -13,22 +13,23 @@ jobs:
     steps:
     - name: Check Out Repo 
       uses: actions/checkout@v4
+
     - name: Restore livedata
       uses: actions/cache/restore@v4
       with:
         path: lives.yml
         key: livedata
-    - name: Install pipenv
-      run: pipx install pipenv
-    - name: Setup Python
-      uses: actions/setup-python@v5
+
+    - name: Setup uv
+      uses: astral-sh/setup-uv@v5
       with:
-        python-version: '3.x'
-        cache: pipenv
+        enable-cache: true
+
     - name: Install dependencies
-      run: pipenv install
+      run: uv sync --frozen
+
     - name: Execute
-      run: pipenv run main
+      run: uv run main.py
       env:
         TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
         TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
@@ -36,6 +37,7 @@ jobs:
         TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
         YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+
     - name: Save live datas
       uses: actions/cache/save@v4
       with:
