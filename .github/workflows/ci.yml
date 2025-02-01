@@ -2,13 +2,16 @@ name: CI
 
 on:
   pull_request:
+    branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Check Out Repo 
+    - name: Checkout repository
       uses: actions/checkout@v4
 
     - name: Setup uv
@@ -18,3 +21,28 @@ jobs:
 
     - name: Install dependencies
       run: uv sync --frozen
+
+    - name: Restore livedata
+      if: github.event_name == 'pull_request'
+      uses: actions/cache/restore@v4
+      with:
+        path: lives.yml
+        key: livedata
+
+    - name: Execute
+      if: github.event_name == 'pull_request'
+      run: uv run main.py
+      env:
+        TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY }}
+        TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+        TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+        TWITTER_ACCESS_TOKEN_SECRET: ${{ secrets.TWITTER_ACCESS_TOKEN_SECRET }}
+        YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        YOUTUBE_CHANNEL_ID: ${{ secrets.YOUTUBE_CHANNEL_ID }}
+
+    - name: Save live datas
+      if: github.event_name == 'pull_request'
+      uses: actions/cache/save@v4
+      with:
+        path: lives.yml
+        key: livedata
