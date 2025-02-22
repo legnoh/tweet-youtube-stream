@@ -1,0 +1,3 @@
+google-api-python-client>=2.159.0
+pyyaml>=6.0.2
+tweepy>=4.15.0
